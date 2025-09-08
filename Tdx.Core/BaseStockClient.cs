@@ -122,12 +122,15 @@ namespace Tdx.Core
                 var headerBuffer = new byte[16];
                 await _stream.ReadExactlyAsync(headerBuffer, 0, 16);
 
+                // Correctly parse the <IBIBHHH response header format
                 using var reader = new BinaryReader(new MemoryStream(headerBuffer));
-                reader.ReadUInt32(); // prefix
-                byte zipped = reader.ReadByte();
-                reader.ReadUInt32(); // customize/unknown
-                reader.ReadByte();   // unknown
-                ushort zipSize = reader.ReadUInt16();
+                reader.ReadUInt32(); // prefix (I)
+                byte zipped = reader.ReadByte(); // zipped (B)
+                reader.ReadUInt32(); // customize (I)
+                reader.ReadByte();   // unknown (B)
+                reader.ReadUInt16(); // msg_id (H)
+                ushort zipSize = reader.ReadUInt16(); // zipsize (H)
+                ushort _ = reader.ReadUInt16(); // unzip_size (H) - read to advance stream
 
                 var bodyBuffer = new byte[zipSize];
                 await _stream.ReadExactlyAsync(bodyBuffer, 0, zipSize);
