@@ -87,7 +87,7 @@ namespace Tdx.Core
 
             while (remainingCount > 0)
             {
-                ushort requestCount = (ushort)Math.Min(remainingCount, maxCountPerRequest);
+                ushort requestCount = (ushort)Math.Min((int)remainingCount, maxCountPerRequest);
                 var parser = new BarsParser(market, code, klineType, currentStart, requestCount);
                 var part = await CallAsync(parser);
 

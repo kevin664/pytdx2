@@ -119,8 +119,8 @@ namespace Tdx.Core.Parsers
             var ipoDate = reader.ReadUInt32();
 
             // Read all float values
-            var floats = new float[28];
-            for (int i = 0; i < 28; i++)
+            var floats = new float[30];
+            for (int i = 0; i < 30; i++)
             {
                 floats[i] = reader.ReadSingle();
             }
@@ -130,7 +130,7 @@ namespace Tdx.Core.Parsers
                 floats[0], floats[1], floats[2], floats[3], floats[4], floats[5], floats[6], floats[7],
                 floats[8], floats[9], floats[10], floats[11], floats[12], floats[13], floats[14], floats[15],
                 floats[16], floats[17], floats[18], floats[19], floats[20], floats[21], floats[22], floats[23],
-                floats[24], floats[25], floats[26], floats[27]
+                floats[24], floats[25], floats[26], floats[27], floats[28], floats[29]
             );
         }
     }
