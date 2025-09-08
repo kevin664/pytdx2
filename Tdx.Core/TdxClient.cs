@@ -214,5 +214,30 @@ namespace Tdx.Core
 
             return results;
         }
+
+        public async Task<List<BlockEntry>?> GetBlockInfoAsync(BlockFileType blockFileType)
+        {
+            var meta = await CallAsync(new MetaParser(blockFileType));
+            if (meta == null)
+            {
+                return null;
+            }
+
+            const uint chunkSize = 0x7530;
+            var fileContent = new MemoryStream();
+
+            for (uint start = 0; start < meta.Size; start += chunkSize)
+            {
+                var parser = new BlockInfoParser(blockFileType, start, chunkSize);
+                var response = await CallAsync(parser);
+                if (response?.Data != null)
+                {
+                    await fileContent.WriteAsync(response.Data, 0, response.Data.Length);
+                }
+            }
+
+            var blockReader = new BlockReader();
+            return blockReader.GetFlatData(fileContent.ToArray());
+        }
     }
 }

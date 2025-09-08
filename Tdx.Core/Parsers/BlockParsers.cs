@@ -55,9 +55,9 @@ namespace Tdx.Core.Parsers
         }
     }
 
-    public class InfoParser : ReportParser
+    public class BlockInfoParser : ReportParser
     {
-        public InfoParser(BlockFileType blockFileType, uint start, uint size)
+        public BlockInfoParser(BlockFileType blockFileType, uint start, uint size)
             : base(blockFileType.GetFileName(), start, size)
         {
         }
