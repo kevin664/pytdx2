@@ -69,7 +69,8 @@ namespace Tdx.Core.Utils
                 _cancellationTokenSource.Cancel();
             }
             _cancellationTokenSource.Dispose();
-            _heartbeatTask?.Dispose();
+            // It is generally not recommended to dispose a Task.
+            // The task will complete and be garbage collected once it observes the cancellation.
         }
     }
 }

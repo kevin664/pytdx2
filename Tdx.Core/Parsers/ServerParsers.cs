@@ -90,14 +90,16 @@ namespace Tdx.Core.Parsers
         public override LoginResponse Deserialize(byte[] responseBody)
         {
             using var reader = new BinaryReader(new MemoryStream(responseBody));
+            var gbk = Encoding.GetEncoding("GB18030");
 
-            reader.ReadByte(); // Skip 1 byte
+            // Correctly parse the 187-byte structure based on the Python struct format.
+            reader.ReadByte(); // _
             var year = reader.ReadUInt16();
             var day = reader.ReadByte();
             var month = reader.ReadByte();
             var minute = reader.ReadByte();
             var hour = reader.ReadByte();
-            reader.ReadByte(); // Skip 1 byte
+            reader.ReadByte(); // _
             var second = reader.ReadByte();
 
             reader.ReadBytes(16); // unknown1
@@ -109,12 +111,15 @@ namespace Tdx.Core.Parsers
             reader.ReadUInt32();  // date2
             reader.ReadUInt16();  // a2
             reader.ReadUInt16();  // b2
-            reader.ReadBytes(5);  // unknown4
-            reader.ReadBytes(22); // unknown5
+            reader.ReadUInt16();  // unknownH1
+            reader.ReadUInt16();  // unknownH2
 
-            var serverName = Encoding.GetEncoding("GB18030").GetString(reader.ReadBytes(64)).TrimEnd('\0');
-            reader.ReadBytes(6); // unknown7
-            var category = Encoding.GetEncoding("GB18030").GetString(reader.ReadBytes(30)).TrimEnd('\0');
+            reader.ReadBytes(5);  // unknown5s
+            reader.ReadBytes(22); // unknown22s
+
+            var serverName = gbk.GetString(reader.ReadBytes(64)).TrimEnd('\0');
+            var webSite = gbk.GetString(reader.ReadBytes(6)).TrimEnd('\0'); // This is likely a bug in python code, but we follow it.
+            var category = gbk.GetString(reader.ReadBytes(30)).TrimEnd('\0');
 
             var serverTime = new DateTime(year, month, day, hour, minute, second);
 
