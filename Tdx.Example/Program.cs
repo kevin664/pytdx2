@@ -30,7 +30,7 @@ namespace Tdx.Example
             if (!loggedIn)
             {
                 Console.WriteLine("Failed to log in.");
-                await client.DisconnectAsync();
+                await client.DisposeAsync();
                 return;
             }
 

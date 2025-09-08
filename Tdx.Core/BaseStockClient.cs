@@ -91,7 +91,7 @@ namespace Tdx.Core
                     try
                     {
                         await Task.Delay(delay);
-                        await DisconnectAsync();
+                        await DisposeAsync();
                         await ConnectAsync(this.Ip!, this.Port);
                         var result = await action();
                         if (result != null) return result;
