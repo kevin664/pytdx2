@@ -50,7 +50,7 @@ namespace Tdx.Core
             {
                 try
                 {
-                    using var client = new TdxClient(raiseException: true);
+                    await using var client = new TdxClient(raiseException: true);
                     var stopwatch = Stopwatch.StartNew();
                     var connected = await client.ConnectAsync(host.Ip, host.Port, new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token);
                     stopwatch.Stop();

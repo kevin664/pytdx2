@@ -66,7 +66,7 @@ namespace Tdx.Example
             }
             finally
             {
-                await client.DisconnectAsync();
+                await client.DisposeAsync();
                 Console.WriteLine("Tests finished. Disconnected.");
             }
         }

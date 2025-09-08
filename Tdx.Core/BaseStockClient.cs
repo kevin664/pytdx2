@@ -8,7 +8,7 @@ using Tdx.Core.Utils;
 
 namespace Tdx.Core
 {
-    public class BaseStockClient : IDisposable
+    public class BaseStockClient : IDisposable, IAsyncDisposable
     {
         private TcpClient? _tcpClient;
         private NetworkStream? _stream;
@@ -157,21 +157,27 @@ namespace Tdx.Core
              return await SendWithRetryAsync(async () => await SendAndReceiveAsync(data));
         }
 
-        public async Task DisconnectAsync()
+        public async ValueTask DisposeAsync()
         {
             Log.Info("Disconnecting...");
             _heartbeatService?.Dispose();
-            _stream?.Dispose();
+
+            if (_stream != null)
+            {
+                await _stream.DisposeAsync();
+            }
             _tcpClient?.Dispose();
+            _asyncLock.Dispose();
+
             _heartbeatService = null;
             _stream = null;
             _tcpClient = null;
+            GC.SuppressFinalize(this);
         }
 
         public void Dispose()
         {
-            DisconnectAsync().Wait();
-            _asyncLock.Dispose();
+            DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
     }
 }
